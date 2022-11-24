@@ -30,7 +30,12 @@ def log_request(logger, body, next):
 def event_test(body, say, logger):
     logger.info(body)
 
-    if  "cinq connect" in body["event"]["text"].lower() and body["event"]["channel_type"] == "group":
+    try:
+        channel_type = body["event"]["channel_type"]
+    except KeyError:
+        channel_type = ""
+
+    if "cinq connect" in body["event"]["text"].lower() and channel_type != "im" and body["event"]["user"] == "UGN0UGXJA":
         say_cinq_connect_intro(say)
         say_cinq_connect_info(say)
 
@@ -68,13 +73,13 @@ def slack_events():
 
 def say_cinq_connect_intro(say):
     raw_msg = """
-        Hi @channel! My name is didoubot, and I am created by Diederik de Graaf,
+        _Hi <!channel>! My name is didoubot, and I am created by Diederik de Graaf,
         from the CINQ DevOps unit. On 24 November, there will be a workshop
         on how to create me! Or at least, something like me. And we're going
         to use something called 'Azure Functions'.
 
         Below you will find some info on the CINQ Connect. If you want to see the info again,
-        you can send me a direct message and say "cinq connect".
+        you can send me a direct message and say "cinq connect"._
         """
 
     raw_msg.strip('\n')
@@ -91,26 +96,15 @@ Some coding experience is recommended, but there will be plenty of helpful CINQe
 
 To prepare for the workshop, you will need a few things:
 
-• Python 3
-• An Azure account from CINQ ICT. Send an email to luuk.de.wit@cinqict.nl to request one.
-• Visual Studio Code + extensions (we need this to deploy to Azure Functions, but IntelliJ is also supported)
-\t• Python
-\t• Azure Account
-\t• Azure Resources
-\t• Azure Functions
-• Azure Functions Core Tools
-• Ngrok (You will need an account)
-
-Links:
-• https://www.python.org/downloads/
-• https://code.visualstudio.com/
-• Visual Studio Code extensions:
-\t• https://marketplace.visualstudio.com/items?itemName=ms-python.python
-\t• https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account
-\t• https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureresourcegroups
-\t• https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions
-• https://github.com/Azure/azure-functions-core-tools
-• https://ngrok.com
+• <https://www.python.org/downloads/|Python 3>
+• An Azure account from CINQ ICT. Submit the <https://docs.google.com/forms/d/e/1FAIpQLScTFtZhoLBDiuvbtLsG1H3oPACB9fTkxyuNopXtXgBko6M5xA/viewform|Google Form> to request one.
+• <https://code.visualstudio.com/|Visual Studio Code> + extensions (we need this to deploy to Azure Functions, but IntelliJ is also supported)
+\t• <https://marketplace.visualstudio.com/items?itemName=ms-python.python|Python>
+\t• <https://marketplace.visualstudio.com/items?itemName=ms-vscode.azure-account|Azure Account>
+\t• <https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureresourcegroups|Azure Resources>
+\t• <https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions|Azure Functions>
+• <https://github.com/Azure/azure-functions-core-tools|Azure Functions Core Tools>
+• <https://ngrok.com|Ngrok> (You will need an account)
         """
 
     say(raw_msg)
